@@ -28,12 +28,7 @@ export default function useSearch(query, pageNumber) {
           return [
             ...new Set([
               ...prevCharacters,
-              ...res.data.results.map((item) => {
-                return {
-                  name: item.name,
-                  image: item.image,
-                };
-              }),
+              ...res.data.results.map((item) => item.name),
             ]),
           ];
         });
