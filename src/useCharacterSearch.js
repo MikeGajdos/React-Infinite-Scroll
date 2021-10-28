@@ -24,12 +24,16 @@ export default function useSearch(query, pageNumber) {
       cancelToken: new CancelToken((c) => (cancel = c)),
     })
       .then((res) => {
-        console.log(res);
         setCharacters((prevCharacters) => {
           return [
             ...new Set([
               ...prevCharacters,
-              ...res.data.results.map((item) => item.name),
+              ...res.data.results.map((item) => {
+                return {
+                  name: item.name,
+                  image: item.image,
+                };
+              }),
             ]),
           ];
         });
