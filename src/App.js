@@ -5,30 +5,25 @@ function App() {
   const [pageNumber, setPageNumber] = useState(1);
   const { characters, hasMore, loading, error } = useSearch(query, pageNumber);
   const loader = useRef();
+  const observer = useRef();
 
-  const observeBtn = () => {
-    const observer = new IntersectionObserver(
+  useEffect(() => {
+    if (loading) return;
+    // if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && hasMore) {
-            setPageNumber((prevPageNumber) => prevPageNumber + 1);
-          }
-        });
+        if (entries[0].isIntersecting && hasMore) {
+          setPageNumber((prevPageNumber) => prevPageNumber + 1);
+        }
       },
       {
         rootMargin: "20px",
       }
     );
-    observer.observe(loader.current);
+    if (loader.current) observer.current.observe(loader.current);
 
-    return observer;
-  };
-
-  useEffect(() => {
-    const observer = observeBtn();
-
-    return () => observer.unobserve(loader.current);
-  }, [loader, pageNumber, loading]);
+    return () => observer.current?.disconnect();
+  }, [loading, hasMore, loader]);
 
   // const observer = useRef();
   // const lastCharacterElement = useCallback(
@@ -83,7 +78,9 @@ function App() {
         //   );
         // }
       })}
-      <div ref={loader}>Load more</div>
+      <div ref={loader}>
+        {hasMore ? "Load more" : "No more characters to fetch"}
+      </div>
       <div>{loading && "loading ..."}</div>
       <div>{error && "Error"}</div>
     </div>
