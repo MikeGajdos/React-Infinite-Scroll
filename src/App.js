@@ -14,7 +14,6 @@ function App() {
         (entries) => {
           if (entries[0].isIntersecting && hasMore) {
             setPageNUmber((prevPageNumber) => prevPageNumber + 1);
-            console.log("I am in view");
           }
         },
         {
